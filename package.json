@@ -5,10 +5,10 @@
 	"license": "ISC",
 	"scripts": {
 		"init": "cd src/frontend && npm i && cd ../backend && npm i",
-		"up": "docker compose watch",
+		"up": "docker compose up -d",
 		"down": "docker compose down",
-		"rebuild": "docker compose down --rmi all --volumes && docker compose build --no-cache && docker compose watch",
-		"rebuild-with-cache": "docker compose down && docker compose watch",
+		"rebuild": "docker compose down --rmi all --volumes && docker compose build --no-cache && docker compose up -d",
+		"rebuild-with-cache": "docker compose down && docker compose up -d",
 		"prune": "docker compose down --rmi all --volumes",
 		"logs": "docker compose logs -f"
 	}

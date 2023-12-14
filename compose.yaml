@@ -17,17 +17,23 @@ services:
       - ${FRONTEND_PORT}:9000 # do not change this port
     depends_on:
       - backend
-    develop:
-      watch:
-        - action: sync
-          path: ./src/frontend/src
-          target: /usr/src/app/frontend/src
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: ./src/frontend/package.json
+    volumes:
+    # Binds the application folder from the host inside the container for fast changes
+      - ./src/frontend:/usr/src/app/frontend
+    # Ignores the node_modules of the host and uses it's own instead
+      - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
+    # develop enables hot reloading without mounting volumes
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./src/frontend/src
+    #       target: /usr/src/app/frontend/src
+    #       ignore:
+    #         - node_modules/
+    #     - action: rebuild
+    #       path: ./src/frontend/package.json
 
   ##############################################################################
   #                                   Backend                                  #
@@ -44,17 +50,23 @@ services:
       - ${BACKEND_PORT}:9090 # do not change this port
     depends_on:
       - db
-    develop:
-      watch:
-        - action: sync
-          path: ./src/backend/src
-          target: /usr/src/app/backend/src
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: ./src/backend/package.json
+    volumes:
+      # Binds the application folder from the host inside the container enabling hot reloading
+      - ./src/backend:/usr/src/app/backend
+      # Ignores the node_modules of the host and uses it's own instead
+      - /usr/src/app/backend/node_modules
     networks:
       - shared-network
+    # develop enables hot reloading without mounting volumes
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./src/backend/src
+    #       target: /usr/src/app/backend/src
+    #       ignore:
+    #         - node_modules/
+    #     - action: rebuild
+    #       path: ./src/backend/package.json
 
   ##############################################################################
   #                                    pgAdmin                                 #
@@ -92,6 +104,12 @@ services:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:
       - shared-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   ##############################################################################
   #                                    Extra                                   #
