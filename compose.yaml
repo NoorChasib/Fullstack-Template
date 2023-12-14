@@ -15,8 +15,8 @@ services:
         - NODE_VERSION=${NODE_VERSION}
     ports:
       - ${FRONTEND_PORT}:9000 # do not change this port
-    # depends_on:
-    #   - backend
+    depends_on:
+      - backend
     develop:
       watch:
         - action: sync
@@ -32,29 +32,29 @@ services:
   ##############################################################################
   #                                   Backend                                  #
   ##############################################################################
-  # backend:
-  #   container_name: ${APP_NAME}-backend
-  #   restart: always
-  #   build:
-  #     context: ./src/backend
-  #     dockerfile: .docker/Dockerfile
-  #     args:
-  #       - NODE_VERSION=${NODE_VERSION}
-  #   ports:
-  #     - ${BACKEND_PORT}:9090 # do not change this port
-  #   depends_on:
-  #     - db
-  #   develop:
-  #     watch:
-  #       - action: sync
-  #         path: ./src/backend/src
-  #         target: /usr/src/app/backend/src
-  #         ignore:
-  #           - node_modules/
-  #       - action: rebuild
-  #         path: ./src/backend/package.json
-  #   networks:
-  #     - shared-network
+  backend:
+    container_name: ${APP_NAME}-backend
+    restart: always
+    build:
+      context: ./src/backend
+      dockerfile: .docker/Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    ports:
+      - ${BACKEND_PORT}:9090 # do not change this port
+    depends_on:
+      - db
+    develop:
+      watch:
+        - action: sync
+          path: ./src/backend/src
+          target: /usr/src/app/backend/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./src/backend/package.json
+    networks:
+      - shared-network
 
   ##############################################################################
   #                                    pgAdmin                                 #
