@@ -1,0 +1,82 @@
+version: "1.0"
+
+# Services
+services:
+  ##############################################################################
+  #                                   Backend                                  #
+  ##############################################################################
+  # backend:
+  #   container_name: ${APP_NAME}-backend
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./src/backend
+  #     dockerfile: .docker/Dockerfile
+  #     args:
+  #       - NODE_VERSION=${NODE_VERSION}
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - ${BACKEND_PORT}:9090
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./src/backend/src
+  #         target: /usr/src/app/backend/src
+  #         ignore:
+  #           - node_modules/
+  #       - action: rebuild
+  #         path: ./src/backend/package.json
+  #   networks:
+  #     - shared-network
+
+  ##############################################################################
+  #                                   Frontend                                 #
+  ##############################################################################
+  frontend:
+    container_name: ${APP_NAME}-frontend
+    restart: unless-stopped
+    build:
+      context: ./src/frontend
+      dockerfile: .docker/Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    ports:
+      - ${FRONTEND_PORT}:9000
+    # depends_on:
+    #   - backend
+    develop:
+      watch:
+        - action: sync
+          path: ./src/frontend/src
+          target: /usr/src/app/frontend/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./src/frontend/package.json
+    networks:
+      - shared-network
+
+  ##############################################################################
+  #                                   Database                                 #
+  ##############################################################################
+  db:
+    container_name: ${APP_NAME}-db
+    image: ${DATABASE_IMAGE} # This will depend on setup and the images available
+    restart: always
+    environment: # Adapt these to match the database type you're using
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:5432 # Adjust the internal port if using a different database
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
+    networks:
+      - shared-network
+
+# Volumes
+volumes:
+  postgres_data: # Adjust the volume name if using a different database
+
+# Networks
+networks:
+  shared-network:
