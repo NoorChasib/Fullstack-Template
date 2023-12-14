@@ -3,33 +3,6 @@ version: "1.0"
 # Services
 services:
   ##############################################################################
-  #                                   Backend                                  #
-  ##############################################################################
-  # backend:
-  #   container_name: ${APP_NAME}-backend
-  #   restart: unless-stopped
-  #   build:
-  #     context: ./src/backend
-  #     dockerfile: .docker/Dockerfile
-  #     args:
-  #       - NODE_VERSION=${NODE_VERSION}
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - ${BACKEND_PORT}:9090
-  #   develop:
-  #     watch:
-  #       - action: sync
-  #         path: ./src/backend/src
-  #         target: /usr/src/app/backend/src
-  #         ignore:
-  #           - node_modules/
-  #       - action: rebuild
-  #         path: ./src/backend/package.json
-  #   networks:
-  #     - shared-network
-
-  ##############################################################################
   #                                   Frontend                                 #
   ##############################################################################
   frontend:
@@ -57,6 +30,54 @@ services:
       - shared-network
 
   ##############################################################################
+  #                                   Backend                                  #
+  ##############################################################################
+  # backend:
+  #   container_name: ${APP_NAME}-backend
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./src/backend
+  #     dockerfile: .docker/Dockerfile
+  #     args:
+  #       - NODE_VERSION=${NODE_VERSION}
+  #   ports:
+  #     - ${BACKEND_PORT}:9090
+  #   depends_on:
+  #     - db
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./src/backend/src
+  #         target: /usr/src/app/backend/src
+  #         ignore:
+  #           - node_modules/
+  #       - action: rebuild
+  #         path: ./src/backend/package.json
+  #   networks:
+  #     - shared-network
+
+  ##############################################################################
+  #                                    pgAdmin                                 #
+  ##############################################################################
+  pgadmin:
+    container_name: ${APP_NAME}-pgadmin
+    image: ${PGADMIN_IMAGE} # This will depend on setup and the images available
+    restart: always
+    environment: # Adapt these to match pgAdmin's setup
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - ${PGADMIN_PORT}:80 # Adjust the internal port if somethings different
+    depends_on:
+      - db
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+      - ./pgadmin/.pgpass:/pgpassfile
+      - ./pgadmin/data:/var/lib/pgadmin
+    networks:
+      - shared-network
+
+  ##############################################################################
   #                                   Database                                 #
   ##############################################################################
   db:
@@ -69,9 +90,13 @@ services:
     ports:
       - ${DATABASE_PORT}:5432 # Adjust the internal port if using a different database
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
+      - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:
       - shared-network
+
+  ##############################################################################
+  #                                    Extra                                   #
+  ##############################################################################
 
 # Volumes
 volumes:

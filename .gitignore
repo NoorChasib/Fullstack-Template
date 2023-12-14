@@ -27,3 +27,6 @@ package-lock.json
 .env
 init.sql
 .gitattributes
+servers.json
+.pgpass
+/pgadmin/data

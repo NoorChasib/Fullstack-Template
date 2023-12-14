@@ -65,6 +65,14 @@ Edit .env file with your environment-specific settings
 cp .env.template .env
 ```
 
+#### Step 4: Rename pgadmin/servers.json.template to servers.json.template
+
+Edit servers.json file with your environment-specific settings
+
+```bash
+cp servers.json.template servers.json
+```
+
 ### Configuring Docker
 
 1. Navigate to the compose.yaml file.
