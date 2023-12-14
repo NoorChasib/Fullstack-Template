@@ -7,7 +7,7 @@ services:
   ##############################################################################
   frontend:
     container_name: ${APP_NAME}-frontend
-    restart: unless-stopped
+    restart: always
     build:
       context: ./src/frontend
       dockerfile: .docker/Dockerfile
@@ -34,7 +34,7 @@ services:
   ##############################################################################
   # backend:
   #   container_name: ${APP_NAME}-backend
-  #   restart: unless-stopped
+  #   restart: always
   #   build:
   #     context: ./src/backend
   #     dockerfile: .docker/Dockerfile
