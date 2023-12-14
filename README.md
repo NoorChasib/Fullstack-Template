@@ -1,35 +1,39 @@
 # Project Name
 
-Provide a brief description of what your project does.
+Fullstack Docker template.
 
 ## Technologies Used
+
+### Overall
+
+- Docker
 
 ### Frontend
 
 - **Framework/Library**:
 
-  - React (v18.2.0)
+  - React
 
 - **Development Tools**:
 
-  - Vite (v5.0.5)
-  - TypeScript (v5.3.2)
-  - ESLint (v8.55.0)
-  - Prettier (v3.1.0)
+  - Vite
+  - TypeScript
+  - ESLint
+  - Prettier
+  - Dotenv
 
 ### Backend
 
 - **Core Technologies**:
 
-  - Node.js (v20.10.0)
-  - Express.js (v4.18.2)
+  - Express.js
+  - Cors
+  - Dotenv
+  - Pg
 
 - **Development Tools**:
 
-  - TypeScript (v5.3.2)
-  - Nodemon (v3.0.2)
-  - ESLint (v8.55.0)
-  - Prettier (v3.1.0)
+  - Nodemon
 
 ## Getting Started
 
@@ -59,7 +63,7 @@ cd [repository name]
 
 #### Step 3: Copy the .env.template file and rename it to .env.
 
-Edit .env file with your environment-specific settings
+Edit .env file with your environment-specific settings. Do the same for src/frontend and src/backend
 
 ```bash
 cp .env.template .env
@@ -79,9 +83,15 @@ cp servers.json.template servers.json
 
 2. Make any required changes in the compose.yaml file to suit your needs.
 
-### Running the Project with Docker
+### Running the Project
 
-The project uses Docker to simplify development and deployment. Below are some of the scripts available in package.json to run Docker commands.
+The project uses Docker to simplify development and deployment. Below are some of the scripts available in package.json to run the project.
+
+- To install all necessary packages:
+
+```bash
+npm run init
+```
 
 - To build and start the Docker images:
 
