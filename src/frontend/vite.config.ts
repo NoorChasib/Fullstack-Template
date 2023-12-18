@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const frontendHost = process.env.FRONTEND_HOST;
+// const frontendHost = process.env.FRONTEND_HOST;
 const frontendPort = Number(process.env.FRONTEND_PORT);
 const backendUrl = process.env.BACKEND_URL;
 
@@ -17,7 +17,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: frontendHost,
+    host: true,
     port: frontendPort,
     proxy: {
       '/api': {
