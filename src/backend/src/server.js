@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const pool = require("./database/connectDatabase");
+const client = require("./database/connectDatabase");
 const initializeDatabase = require("./database/initializeDatabase");
 
 const app = express();
@@ -18,7 +18,7 @@ initializeDatabase()
 		// route to check database connection and fetch testuser
 		app.get("/api/db-check", async (req, res) => {
 			try {
-				const dbResponse = await pool.query(
+				const dbResponse = await client.query(
 					"SELECT * FROM users WHERE username = 'testuser'"
 				);
 				if (dbResponse.rows.length > 0) {
@@ -49,8 +49,8 @@ initializeDatabase()
 			console.log("SIGTERM signal received: closing HTTP server");
 			server.close(async () => {
 				console.log("HTTP server closed");
-				await pool.end();
-				console.log("Database pool closed");
+				await client.end();
+				console.log("Database client closed");
 			});
 		});
 	})
