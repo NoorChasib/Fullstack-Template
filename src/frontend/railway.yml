@@ -1,5 +1,0 @@
-services:
-  frontend:
-    type: static
-    buildCommand: npm run build
-    staticPublishPath: dist # Replace with the actual output directory of your build
