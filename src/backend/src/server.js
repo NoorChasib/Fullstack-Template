@@ -4,7 +4,7 @@ const client = require("./database/connectDatabase");
 const initializeDatabase = require("./database/initializeDatabase");
 
 const app = express();
-const port = process.env.BACKEND_PORT || 9090;
+const port = process.env.BACKEND_PORT;
 
 app.use(express.json());
 app.use(cors());
