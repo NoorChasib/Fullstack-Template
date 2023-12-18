@@ -1,4 +1,0 @@
-[static]
-  buildCommand = "npm run build"
-  publishDirectory = "dist"
- 
