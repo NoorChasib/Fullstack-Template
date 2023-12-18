@@ -4,7 +4,7 @@ const client = require("./database/connectDatabase");
 const initializeDatabase = require("./database/initializeDatabase");
 
 const app = express();
-const port = process.env.BACKEND_PORT;
+const port = process.env.BACKEND_PORT || 9090;
 
 app.use(express.json());
 app.use(cors());
@@ -40,8 +40,8 @@ initializeDatabase()
 			}
 		});
 
-		const server = app.listen(port, () =>
-			console.log("Server running on port " + port)
+		const server = app.listen(port, "::", () =>
+			console.log(`Server listening on [::]${port}`)
 		);
 
 		// Handle server shutdown gracefully
