@@ -1,4 +1,4 @@
-version: "1.0"
+version: "3.8"
 
 # Services
 services:
@@ -110,7 +110,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
 
   ##############################################################################
   #                                    Extra                                   #

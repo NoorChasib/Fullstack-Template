@@ -4,9 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
-// const frontendHost = process.env.FRONTEND_HOST;
 const frontendPort = Number(process.env.FRONTEND_PORT);
-const backendUrl = process.env.BACKEND_URL;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,13 +16,7 @@ export default defineConfig({
   },
   server: {
     host: true,
+    strictPort: true,
     port: frontendPort,
-    proxy: {
-      '/api': {
-        target: backendUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-    },
   },
 });
