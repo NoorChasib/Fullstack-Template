@@ -4,7 +4,7 @@
     }
 }
 
-{$CADDY_URL}:{$CADDY_PORT} {
+{$CADDY_DEV_URL}:{$CADDY_PORT} {
     # Reverse proxy for /api
     reverse_proxy /api* {$BACKEND_URL}:{$BACKEND_PORT}
 
