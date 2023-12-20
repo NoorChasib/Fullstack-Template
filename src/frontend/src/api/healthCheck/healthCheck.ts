@@ -1,4 +1,4 @@
-import { apiUrl } from '../../utils';
+// import { apiUrl } from '../../utils';
 
 // Define an interface for your API response if possible
 interface ApiResponse {
@@ -15,7 +15,7 @@ export const healthCheck = async (
   setError('');
 
   try {
-    const response = await fetch(`${apiUrl}/api/db-check`);
+    const response = await fetch(`/api/db-check`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
