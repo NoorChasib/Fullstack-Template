@@ -25,7 +25,7 @@
 
     # Reverse proxy for /api
     # Replace `site.com` with your actual backend URL
-    reverse_proxy /api* {env.BACKEND_URL}/api{uri}
+    reverse_proxy /api* {BACKEND_URL}/api{uri}
 
     # serve from the 'dist' folder (Vite builds into the 'dist' folder)
     root * dist
