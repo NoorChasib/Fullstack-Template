@@ -10,7 +10,7 @@ services:
     restart: always
     build:
       context: ./src/frontend
-      dockerfile: .docker/Dockerfile
+      dockerfile: .docker/Dockerfile.dev
       args:
         - NODE_VERSION=${NODE_VERSION}
     # ports:
@@ -43,7 +43,7 @@ services:
     restart: always
     build:
       context: ./src/backend
-      dockerfile: .docker/Dockerfile
+      dockerfile: .docker/Dockerfile.dev
       args:
         - NODE_VERSION=${NODE_VERSION}
     # ports:
