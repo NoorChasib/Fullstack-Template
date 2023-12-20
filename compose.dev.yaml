@@ -46,8 +46,8 @@ services:
       dockerfile: .docker/Dockerfile
       args:
         - NODE_VERSION=${NODE_VERSION}
-    ports:
-      - ${BACKEND_PORT}:9090 # do not change this port
+    # ports:
+    #   - ${BACKEND_PORT}:9090 # do not change this port
     depends_on:
       - db
     volumes:
