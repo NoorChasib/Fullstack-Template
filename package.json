@@ -5,11 +5,14 @@
 	"license": "ISC",
 	"scripts": {
 		"init": "cd src/frontend && npm i && cd ../backend && npm i",
-		"up": "docker compose up -d",
-		"down": "docker compose down",
-		"rebuild": "docker compose down --rmi all --volumes && docker compose build --no-cache && docker compose up -d",
-		"rebuild-with-cache": "docker compose down && docker compose up -d",
-		"prune": "docker compose down --rmi all --volumes",
-		"logs": "docker compose logs -f"
+		"dev:up": "docker compose -f compose.dev.yaml up -d",
+		"dev:down": "docker compose -f compose.dev.yaml down",
+		"dev:rebuild": "docker compose -f compose.dev.yaml down --rmi all --volumes && docker compose -f compose.dev.yaml build --no-cache && docker compose -f compose.dev.yaml up -d",
+		"dev:logs": "docker compose -f compose.dev.yaml logs -f",
+		"prod:up": "docker compose -f compose.prod.yaml up -d",
+		"prod:down": "docker compose -f compose.prod.yaml down",
+		"prod:rebuild": "docker compose -f compose.prod.yaml down --rmi all --volumes && docker compose -f compose.prod.yaml build --no-cache && docker compose -f compose.prod.yaml up -d",
+		"prod:logs": "docker compose -f compose.prod.yaml logs -f",
+		"prune": "docker system prune -af --volumes"
 	}
 }

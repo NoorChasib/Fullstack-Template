@@ -1,0 +1,125 @@
+version: "3.8"
+
+# Services
+services:
+  ##############################################################################
+  #                                   Frontend                                 #
+  ##############################################################################
+  frontend:
+    container_name: frontend-${APP_NAME}
+    restart: always
+    build:
+      context: ./src/frontend
+      dockerfile: .docker/Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    ports:
+      - ${FRONTEND_PORT}:9000 # do not change this port
+    depends_on:
+      - backend
+    volumes:
+    # Binds the application folder from the host inside the container for fast changes
+      - ./src/frontend:/usr/src/app/frontend
+    # Ignores the node_modules of the host and uses it's own instead
+      - /usr/src/app/frontend/node_modules
+    networks:
+      - shared-network
+    # develop enables hot reloading without mounting volumes
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./src/frontend/src
+    #       target: /usr/src/app/frontend/src
+    #       ignore:
+    #         - node_modules/
+    #     - action: rebuild
+    #       path: ./src/frontend/package.json
+
+  ##############################################################################
+  #                                   Backend                                  #
+  ##############################################################################
+  backend:
+    container_name: backend-${APP_NAME}
+    restart: always
+    build:
+      context: ./src/backend
+      dockerfile: .docker/Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    ports:
+      - ${BACKEND_PORT}:9090 # do not change this port
+    depends_on:
+      - db
+    volumes:
+      # Binds the application folder from the host inside the container enabling hot reloading
+      - ./src/backend:/usr/src/app/backend
+      # Ignores the node_modules of the host and uses it's own instead
+      - /usr/src/app/backend/node_modules
+    networks:
+      - shared-network
+    # develop enables hot reloading without mounting volumes
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./src/backend/src
+    #       target: /usr/src/app/backend/src
+    #       ignore:
+    #         - node_modules/
+    #     - action: rebuild
+    #       path: ./src/backend/package.json
+
+  ##############################################################################
+  #                                    pgAdmin                                 #
+  ##############################################################################
+  pgadmin:
+    container_name: pgadmin-${APP_NAME}
+    image: ${PGADMIN_IMAGE} # This will depend on setup and the images available
+    restart: always
+    environment: # Adapt these to match pgAdmin's setup
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - ${PGADMIN_PORT}:80 # do not change this port
+    depends_on:
+      - db
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - shared-network
+
+  ##############################################################################
+  #                                   Database                                 #
+  ##############################################################################
+  db:
+    container_name: db-${APP_NAME}
+    image: ${DATABASE_IMAGE} # This will depend on setup and the images available
+    restart: always
+    environment: # Adapt these to match the database type you're using
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:5432 # do not change this port
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
+      # - ./src/backend/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
+    networks:
+      - shared-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ##############################################################################
+  #                                    Extra                                   #
+  ##############################################################################
+
+# Volumes
+volumes:
+  postgres_data: # Adjust the volume name if using a different database
+  pgadmin_data: # Adjust the volume name if using a different database
+
+# Networks
+networks:
+  shared-network:

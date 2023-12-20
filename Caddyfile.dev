@@ -1,0 +1,13 @@
+{
+    log {
+        format json # set runtime log format to json mode 
+    }
+}
+
+{$CADDY_URL}:{$CADDY_PORT} {
+    # Reverse proxy for /api
+    reverse_proxy /api* {$BACKEND_URL}:{$BACKEND_PORT}
+
+    # Default reverse proxy (for all other requests)
+    reverse_proxy /* {$FRONTEND_URL}:{$FRONTEND_PORT}
+}

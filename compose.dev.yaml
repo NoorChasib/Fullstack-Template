@@ -6,15 +6,15 @@ services:
   #                                   Frontend                                 #
   ##############################################################################
   frontend:
-    container_name: ${APP_NAME}-frontend
+    container_name: frontend-${APP_NAME}
     restart: always
     build:
       context: ./src/frontend
       dockerfile: .docker/Dockerfile
       args:
         - NODE_VERSION=${NODE_VERSION}
-    ports:
-      - ${FRONTEND_PORT}:9000 # do not change this port
+    # ports:
+    #   - ${FRONTEND_PORT}:9000 # do not change this port
     depends_on:
       - backend
     volumes:
@@ -39,7 +39,7 @@ services:
   #                                   Backend                                  #
   ##############################################################################
   backend:
-    container_name: ${APP_NAME}-backend
+    container_name: backend-${APP_NAME}
     restart: always
     build:
       context: ./src/backend
@@ -72,7 +72,7 @@ services:
   #                                    pgAdmin                                 #
   ##############################################################################
   pgadmin:
-    container_name: ${APP_NAME}-pgadmin
+    container_name: pgadmin-${APP_NAME}
     image: ${PGADMIN_IMAGE} # This will depend on setup and the images available
     restart: always
     environment: # Adapt these to match pgAdmin's setup
@@ -92,7 +92,7 @@ services:
   #                                   Database                                 #
   ##############################################################################
   db:
-    container_name: ${APP_NAME}-db
+    container_name: db-${APP_NAME}
     image: ${DATABASE_IMAGE} # This will depend on setup and the images available
     restart: always
     environment: # Adapt these to match the database type you're using
@@ -110,6 +110,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  ##############################################################################
+  #                                    Caddy                                   #
+  ##############################################################################
+  caddy:
+    container_name: caddy-${APP_NAME}
+    image: ${CADDY_IMAGE} # This will depend on setup and the images available
+    restart: always
+    ports:
+      - ${CADDY_PORT}:9001 # do not change this port
+    depends_on:
+      - db
+      - backend
+      - frontend
+    volumes:
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile
+    env_file:
+    - .env
+    networks:
+      - shared-network
 
   ##############################################################################
   #                                    Extra                                   #
