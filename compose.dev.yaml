@@ -98,8 +98,8 @@ services:
     environment: # Adapt these to match the database type you're using
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    ports:
-      - ${DATABASE_PORT}:5432 # do not change this port
+    # ports:
+    #   - ${DATABASE_PORT}:5432 # do not change this port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
       # - ./src/backend/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
