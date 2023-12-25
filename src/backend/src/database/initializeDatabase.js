@@ -4,7 +4,7 @@ const client = require("./connectDatabase");
 
 async function initializeDatabase() {
 	try {
-		const sqlFilePath = path.join(__dirname, "../../schema/schema.sql");
+		const sqlFilePath = path.join(__dirname, "../../db/schema/schema.sql");
 		const sql = fs.readFileSync(sqlFilePath, "utf-8");
 		await client.query(sql);
 		console.log("Database initialization successful");
