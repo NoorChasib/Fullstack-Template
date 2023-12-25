@@ -1,5 +1,3 @@
-// import { apiUrl } from '../../utils';
-
 // Define an interface for your API response if possible
 interface ApiResponse {
   message: string;
