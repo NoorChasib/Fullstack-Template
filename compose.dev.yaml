@@ -102,7 +102,7 @@ services:
     #   - ${DATABASE_PORT}:${DATABASE_PORT} # do not change this port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
-      # - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
+      - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
     networks:
       - shared-network
     healthcheck:

@@ -5,14 +5,13 @@ const client = new Client({
 	connectionString: process.env.DATABASE_URL,
 });
 
-const delayConnect = (delay = 5000) => {
-	// Delay in milliseconds
+const delayConnect = () => {
 	setTimeout(() => {
 		client
 			.connect()
 			.then(() => console.log("Connected to the database."))
 			.catch((err) => console.error("Failed to connect to the database:", err));
-	}, delay);
+	}, 5000);
 };
 
 delayConnect();
