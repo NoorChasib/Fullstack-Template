@@ -6,8 +6,12 @@
 
 {$CADDY_DEV_URL}:{$CADDY_PORT} {
     # Reverse proxy for /api
-    reverse_proxy /api* {$BACKEND_URL}:{$BACKEND_PORT}
+	handle /api* {
+		reverse_proxy {$BACKEND_URL}:{$BACKEND_PORT}
+	}
 
     # Default reverse proxy (for all other requests)
-    reverse_proxy /* {$FRONTEND_URL}:{$FRONTEND_PORT}
+	handle /* {
+		reverse_proxy {$FRONTEND_URL}:{$FRONTEND_PORT}
+	}
 }

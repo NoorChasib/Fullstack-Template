@@ -14,14 +14,14 @@ services:
       args:
         - NODE_VERSION=${NODE_VERSION}
     # ports:
-    #   - ${FRONTEND_PORT}:9000 # do not change this port
+    #   - ${FRONTEND_PORT}:${FRONTEND_PORT} # do not change this port
     depends_on:
       - backend
-    volumes:
-      # Binds the application folder from the host inside the container for fast changes
-      - ./src/frontend:/usr/src/app/frontend
-      # Ignores the node_modules of the host and uses it's own instead
-      - /usr/src/app/frontend/node_modules
+    # volumes:
+    #   # Binds the application folder from the host inside the container for fast changes
+    #   - ./src/frontend:/usr/src/app/frontend
+    #   # Ignores the node_modules of the host and uses it's own instead
+    #   - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
     # develop enables hot reloading without mounting volumes
@@ -47,14 +47,14 @@ services:
       args:
         - NODE_VERSION=${NODE_VERSION}
     # ports:
-    #   - ${BACKEND_PORT}:9090 # do not change this port
+    #   - ${BACKEND_PORT}:${BACKEND_PORT} # do not change this port
     depends_on:
       - db
-    volumes:
-      # Binds the application folder from the host inside the container enabling hot reloading
-      - ./src/backend:/usr/src/app/backend
-      # Ignores the node_modules of the host and uses it's own instead
-      - /usr/src/app/backend/node_modules
+    # volumes:
+    #   # Binds the application folder from the host inside the container enabling hot reloading
+    #   - ./src/backend:/usr/src/app/backend
+    #   # Ignores the node_modules of the host and uses it's own instead
+    #   - /usr/src/app/backend/node_modules
     networks:
       - shared-network
     # develop enables hot reloading without mounting volumes
@@ -83,7 +83,7 @@ services:
   #   depends_on:
   #     - db
   #   volumes:
-  #     - ./pgadmin/servers.json:/pgadmin4/servers.json
+  #     - ./src/backend/db/pgadmin/servers.json:/pgadmin4/servers.json
   #     - pgadmin_data:/var/lib/pgadmin
   #   networks:
   #     - shared-network
@@ -98,11 +98,11 @@ services:
     environment: # Adapt these to match the database type you're using
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    ports:
-      - ${DATABASE_PORT}:5432 # do not change this port
+    # ports:
+    #   - ${DATABASE_PORT}:${DATABASE_PORT} # do not change this port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
-      # - ./src/backend/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
+      - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
     networks:
       - shared-network
     healthcheck:
@@ -119,14 +119,14 @@ services:
     image: ${CADDY_IMAGE} # This will depend on setup and the images available
     restart: always
     ports:
-      - ${CADDY_PORT}:9001 # do not change this port
+      - ${CADDY_PORT}:${CADDY_PORT} # do not change this port
     depends_on:
       - db
       - backend
       - frontend
     volumes:
-      - ./Caddyfile.prod:/etc/caddy/Caddyfile
       - ./src/frontend/dist:/usr/src/app/frontend/dist
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile
     env_file:
       - .env
     networks:

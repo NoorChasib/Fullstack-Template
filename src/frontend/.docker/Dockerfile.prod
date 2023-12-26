@@ -17,3 +17,9 @@ RUN npm ci
 
 # Copy the frontend code
 COPY . .
+
+# Build the frontend
+RUN npm run build
+
+# Keep the container running
+CMD ["tail", "-f", "/dev/null"]

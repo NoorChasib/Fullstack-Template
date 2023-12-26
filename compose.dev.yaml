@@ -142,4 +142,4 @@ volumes:
 
 # Networks
 networks:
-  shared-network:
+  shared-network: # Adjust the network name for project 
