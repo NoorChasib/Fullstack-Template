@@ -13,27 +13,10 @@ services:
       dockerfile: .docker/Dockerfile.prod
       args:
         - NODE_VERSION=${NODE_VERSION}
-    # ports:
-    #   - ${FRONTEND_PORT}:${FRONTEND_PORT} # do not change this port
     depends_on:
       - backend
-    # volumes:
-    #   # Binds the application folder from the host inside the container for fast changes
-    #   - ./src/frontend:/usr/src/app/frontend
-    #   # Ignores the node_modules of the host and uses it's own instead
-    #   - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
-    # develop enables hot reloading without mounting volumes
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./src/frontend/src
-    #       target: /usr/src/app/frontend/src
-    #       ignore:
-    #         - node_modules/
-    #     - action: rebuild
-    #       path: ./src/frontend/package.json
 
   ##############################################################################
   #                                   Backend                                  #
@@ -46,47 +29,10 @@ services:
       dockerfile: .docker/Dockerfile.prod
       args:
         - NODE_VERSION=${NODE_VERSION}
-    # ports:
-    #   - ${BACKEND_PORT}:${BACKEND_PORT} # do not change this port
     depends_on:
       - db
-    # volumes:
-    #   # Binds the application folder from the host inside the container enabling hot reloading
-    #   - ./src/backend:/usr/src/app/backend
-    #   # Ignores the node_modules of the host and uses it's own instead
-    #   - /usr/src/app/backend/node_modules
     networks:
       - shared-network
-    # develop enables hot reloading without mounting volumes
-    # develop:
-    #   watch:
-    #     - action: sync
-    #       path: ./src/backend/src
-    #       target: /usr/src/app/backend/src
-    #       ignore:
-    #         - node_modules/
-    #     - action: rebuild
-    #       path: ./src/backend/package.json
-
-  ##############################################################################
-  #                                    pgAdmin                                 #
-  ##############################################################################
-  # pgadmin:
-  #   container_name: pgadmin-${APP_NAME}
-  #   image: ${PGADMIN_IMAGE} # This will depend on setup and the images available
-  #   restart: always
-  #   environment: # Adapt these to match pgAdmin's setup
-  #     - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
-  #     - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
-  #   ports:
-  #     - ${PGADMIN_PORT}:80 # do not change this port
-  #   depends_on:
-  #     - db
-  #   volumes:
-  #     - ./src/backend/db/pgadmin/servers.json:/pgadmin4/servers.json
-  #     - pgadmin_data:/var/lib/pgadmin
-  #   networks:
-  #     - shared-network
 
   ##############################################################################
   #                                   Database                                 #
@@ -98,8 +44,6 @@ services:
     environment: # Adapt these to match the database type you're using
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    # ports:
-    #   - ${DATABASE_PORT}:${DATABASE_PORT} # do not change this port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
       - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
@@ -139,8 +83,7 @@ services:
 # Volumes
 volumes:
   postgres_data: # Adjust the volume name if using a different database
-  pgadmin_data: # Adjust the volume name if using a different database
 
 # Networks
 networks:
-  shared-network:
+  shared-network: # Adjust the network name for project 
