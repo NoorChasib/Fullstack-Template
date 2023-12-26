@@ -8,7 +8,7 @@ const port = process.env.BACKEND_PORT;
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
 	res.status(200).send("Hello World!");
 });
 
