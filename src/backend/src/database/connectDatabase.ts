@@ -1,19 +1,21 @@
-const { Client } = require("pg");
-require("dotenv").config();
+import { Client } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const client = new Client({
-	connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL,
 });
 
-const delayConnect = () => {
-	setTimeout(() => {
-		client
-			.connect()
-			.then(() => console.log("Connected to the database."))
-			.catch((err) => console.error("Failed to connect to the database:", err));
-	}, 5000);
+const delayConnect = (): void => {
+  setTimeout(() => {
+    client
+      .connect()
+      .then(() => console.log('Connected to the database.'))
+      .catch((err) => console.error('Failed to connect to the database:', err));
+  }, 5000);
 };
 
 delayConnect();
 
-module.exports = client;
+export default client;
