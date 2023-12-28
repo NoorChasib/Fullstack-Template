@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import client from './database/connectDatabase';
+import client from '@/database/connectDatabase';
 
 interface User {
   id: number;
