@@ -2,7 +2,7 @@ name: Dependency Check - Backend
 
 on:
   schedule:
-    - cron: '0 0 1,15 * *' # Runs at midnight on the 1st and 15th of every month
+    - cron: "0 0 1,15 * *" # Runs at midnight on the 1st and 15th of every month
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.10.0"
+          node-version: "latest"
 
       - name: Install dependencies
         run: |
@@ -27,6 +27,7 @@ jobs:
         id: outdated
         run: |
           OUTDATED=$(npm outdated || true)
+          echo "::set-output name=outdatedPackages::$OUTDATED"
           if [ ! -z "$OUTDATED" ]; then
             echo "::set-output name=outdated::true"
             echo "Outdated dependencies in ${{ matrix.dir }}:"
@@ -40,7 +41,8 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const title = `Outdated Dependencies Detected in ${{ matrix.dir }}`
-            const body = `There are outdated dependencies in the ${{ matrix.dir }} directory.`
+            let body = `There are outdated dependencies in the ${{ matrix.dir }} directory:\n`
+            body += `${{ steps.outdated.outputs.outdatedPackages }}`
             github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
