@@ -27,9 +27,9 @@ jobs:
         id: outdated
         run: |
           OUTDATED=$(npm outdated || true)
-          echo "::set-output name=outdatedPackages::$OUTDATED"
+          echo "outdatedPackages=$OUTDATED" >> $GITHUB_OUTPUT
           if [ ! -z "$OUTDATED" ]; then
-            echo "::set-output name=outdated::true"
+            echo "outdated=true" >> $GITHUB_OUTPUT
             echo "Outdated dependencies in ${{ matrix.dir }}:"
             echo "$OUTDATED"
           fi
