@@ -18,8 +18,8 @@ RUN npm ci
 # Copy the backend code
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 9090
+# Build the backend
+RUN npm run build
 
 # Command to run the app
 CMD [ "npm", "run", "start" ]

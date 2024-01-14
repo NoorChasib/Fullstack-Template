@@ -63,14 +63,17 @@ services:
     image: ${CADDY_IMAGE} # This will depend on setup and the images available
     restart: always
     ports:
-      - ${CADDY_PORT}:${CADDY_PORT} # do not change this port
+      - 80:80 
+      - 443:443
     depends_on:
       - db
       - backend
       - frontend
     volumes:
       - ./src/frontend/dist:/usr/src/app/frontend/dist
-      - ./Caddyfile.prod:/etc/caddy/Caddyfile
+      - ./prod.Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
     env_file:
       - .env
     networks:
@@ -83,7 +86,9 @@ services:
 # Volumes
 volumes:
   postgres_data: # Adjust the volume name if using a different database
+  caddy_data:
+  caddy_config:
 
 # Networks
 networks:
-  shared-network: # Adjust the network name for project 
+  shared-network: # Adjust the network name for project
