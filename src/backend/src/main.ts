@@ -3,7 +3,7 @@ import cors from 'cors';
 import client from '@/database/connectDatabase';
 
 type TimeRow = {
-  now: string; // Adjusting the type to match the expected database response
+  now: string;
 };
 
 const app = express();
