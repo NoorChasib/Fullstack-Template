@@ -4,7 +4,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 dotenv.config();
-const frontendPort = Number(process.env.FRONTEND_PORT);
+const frontendPort = Number(process.env.PORT);
 
 // https://vitejs.dev/config/
 export default defineConfig({
