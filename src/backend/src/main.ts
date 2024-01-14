@@ -2,12 +2,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import client from '@/database/connectDatabase';
 
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  password_hash: string;
-  created_at: string;
+type TimeRow = {
+  now: string; // Adjusting the type to match the expected database response
 };
 
 const app = express();
@@ -20,20 +16,16 @@ app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Hello World!');
 });
 
-// Route to check database connection and fetch test user
+// Route to check database connection and fetch the current time
 app.get('/api/db-check', (_req: Request, res: Response) => {
   client
-    .query("SELECT * FROM users WHERE username = 'testuser'")
+    .query<TimeRow>('SELECT NOW()')
     .then((dbResponse) => {
-      if (dbResponse.rows.length > 0) {
-        const user: User = dbResponse.rows[0] as User;
-        res.json({
-          message: 'Database connection successful',
-          user: user,
-        });
-      } else {
-        res.status(404).json({ message: 'Test user not found' });
-      }
+      const currentTime = dbResponse.rows[0].now;
+      res.json({
+        message: 'Database connection successful',
+        time: currentTime,
+      });
     })
     .catch((error: Error) => {
       console.error('Database query failed:', error);
@@ -45,5 +37,5 @@ app.get('/api/db-check', (_req: Request, res: Response) => {
 });
 
 app.listen(Number(port), '::', () =>
-  console.log(`Server listening on [::]${port}`),
+  console.log(`Server listening on [::]:${port}`),
 );
