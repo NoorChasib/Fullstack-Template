@@ -2,13 +2,13 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import client from '@/database/connectDatabase';
 
-interface User {
+type User = {
   id: number;
   username: string;
   email: string;
   password_hash: string;
   created_at: string;
-}
+};
 
 const app = express();
 const port = process.env.BACKEND_PORT;
