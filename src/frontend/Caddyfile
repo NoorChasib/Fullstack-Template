@@ -20,10 +20,6 @@
 		format json # set access log format to json mode
 	}
 
-	handle /api* {
-		reverse_proxy {$CADDY_PROD_BACKEND_URL}
-	}
-
 	# health check for railway
 	respond /health 200
 
