@@ -1,7 +1,7 @@
-name: Deploy to Railway
+name: Deploy Backend to Railway
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch: # Manual trigger for backend deployment
 
 jobs:
   deploy:
@@ -14,14 +14,20 @@ jobs:
       - name: Use Latest LTS Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20.11.0" # Replace with the latest LTS version as needed
+          node-version: "20.11.0" # Specify the Node.js version
+
       - name: Install packages
         run: npm install --frozen-lockfile
 
       - name: Install Railway
         run: npm i -g @railway/cli
 
-      - name: Deploy
-        run: railway up
+      - name: Set Railway Environment to production
+        run: railway environment production
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy Backend
+        run: railway up --service Backend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

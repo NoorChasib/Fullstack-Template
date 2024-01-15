@@ -1,0 +1,33 @@
+name: Deploy Frontend to Railway
+
+on:
+  workflow_dispatch: # Manual trigger for frontend deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Latest LTS Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.11.0" # Specify the Node.js version
+
+      - name: Install packages
+        run: npm install --frozen-lockfile
+
+      - name: Install Railway
+        run: npm i -g @railway/cli
+
+      - name: Set Railway Environment to production
+        run: railway environment production
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy Frontend
+        run: railway up --service Frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
