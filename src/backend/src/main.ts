@@ -11,7 +11,7 @@ type User = {
 };
 
 const app = express();
-const port = process.env.BACKEND_PORT;
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
@@ -45,5 +45,5 @@ app.get('/api/db-check', (_req: Request, res: Response) => {
 });
 
 app.listen(Number(port), '::', () =>
-  console.log(`Server listening on [::]${port}`),
+  console.log(`Server listening on [::]:${port}`),
 );
