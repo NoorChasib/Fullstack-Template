@@ -1,0 +1,27 @@
+name: Deploy to Railway
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Latest LTS Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.11.0" # Replace with the latest LTS version as needed
+      - name: Install packages
+        run: npm install --frozen-lockfile
+
+      - name: Install Railway
+        run: npm i -g @railway/cli
+
+      - name: Deploy
+        run: railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
