@@ -18,9 +18,9 @@ services:
     depends_on:
       - backend
     volumes:
-    # Binds the application folder from the host inside the container for fast changes
+      # Binds the application folder from the host inside the container for fast changes
       - ./src/frontend:/usr/src/app/frontend
-    # Ignores the node_modules of the host and uses it's own instead
+      # Ignores the node_modules of the host and uses it's own instead
       - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
@@ -129,7 +129,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     env_file:
-    - .env
+      - .env
     networks:
       - shared-network
 
@@ -146,4 +146,4 @@ volumes:
 
 # Networks
 networks:
-  shared-network: # Adjust the network name for project 
+  shared-network: # Adjust the network name for project
