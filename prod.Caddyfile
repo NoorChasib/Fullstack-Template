@@ -7,7 +7,7 @@
 {$CADDY_PROD_URL} {
     # Reverse proxy for /api
 	handle /api* {
-		reverse_proxy {$BACKEND_URL}:{$BACKEND_PORT}
+		reverse_proxy {$CADDY_PROD_BACKEND_URL}
 	}
 
     # Serve frontend
