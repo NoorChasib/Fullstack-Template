@@ -7,32 +7,47 @@ services:
   ##############################################################################
   frontend:
     container_name: frontend-${APP_NAME}
+    tty: true
     restart: always
     build:
       context: ./src/frontend
       dockerfile: .docker/Dockerfile.prod
       args:
-        - NODE_VERSION=${NODE_VERSION}
+        - NODE_IMAGE=${NODE_IMAGE}
+        - CADDY_IMAGE=${CADDY_IMAGE}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     depends_on:
       - backend
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
     networks:
       - shared-network
+    env_file: 
+      - .env
 
   ##############################################################################
   #                                   Backend                                  #
   ##############################################################################
   backend:
     container_name: backend-${APP_NAME}
+    tty: true
     restart: always
     build:
       context: ./src/backend
       dockerfile: .docker/Dockerfile.prod
       args:
-        - NODE_VERSION=${NODE_VERSION}
+      - NODE_IMAGE=${NODE_IMAGE}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - shared-network
+    env_file: 
+      - .env
 
   ##############################################################################
   #                                   Database                                 #
@@ -51,33 +66,9 @@ services:
       - shared-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 5
-
-  ##############################################################################
-  #                                    Caddy                                   #
-  ##############################################################################
-  caddy:
-    container_name: caddy-${APP_NAME}
-    image: ${CADDY_IMAGE} # This will depend on setup and the images available
-    restart: always
-    ports:
-      - 80:80 
-      - 443:443
-    depends_on:
-      - db
-      - backend
-      - frontend
-    volumes:
-      - ./src/frontend/dist:/usr/src/app/frontend/dist
-      - ./prod.Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    env_file:
-      - .env
-    networks:
-      - shared-network
 
   ##############################################################################
   #                                    Extra                                   #
@@ -92,3 +83,4 @@ volumes:
 # Networks
 networks:
   shared-network: # Adjust the network name for project
+    driver: "bridge"
