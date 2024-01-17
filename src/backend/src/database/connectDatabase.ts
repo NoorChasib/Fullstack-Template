@@ -1,10 +1,11 @@
 import { Client } from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  port: parseInt(process.env.DATABASE_PORT as string),
 });
 
 const delayConnect = (): void => {

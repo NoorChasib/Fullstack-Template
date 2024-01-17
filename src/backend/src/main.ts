@@ -11,7 +11,7 @@ type User = {
 };
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.BACKEND_PORT;
 
 app.use(express.json());
 app.use(cors());
