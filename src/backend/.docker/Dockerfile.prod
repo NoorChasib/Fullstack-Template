@@ -1,10 +1,10 @@
 # Dockerfile for backend service
 
 # Accept build argument for Node version
-ARG NODE_VERSION
+ARG NODE_IMAGE
 
 # Use the Node.js image with the specified version
-FROM node:${NODE_VERSION}
+FROM ${NODE_IMAGE}
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app/backend
