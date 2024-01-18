@@ -20,7 +20,7 @@ Fullstack Docker template.
   - TypeScript
   - ESLint
   - Prettier
-  - Dotenv
+  - Docker
 
 ### Backend
 
@@ -28,12 +28,12 @@ Fullstack Docker template.
 
   - Express.js
   - Cors
-  - Dotenv
   - Pg
 
 - **Development Tools**:
 
   - Nodemon
+  - Docker
 
 ## Getting Started
 

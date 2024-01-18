@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Frontend Dependency"
+
+  # Backend dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/backend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "Backend Dependency"
