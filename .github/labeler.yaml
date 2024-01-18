@@ -1,15 +1,19 @@
-# Auto Label Git Action Config
-# 'label_name'
-#   - path_of_diff/where/code_lives/to_base_label_upon
+# Config file for labeler
 
-'Github Actions':
-  - .github/workflows/*
+# Changes to the following directories will trigger the labeler
 
-'Backend':
-  - src/backend/**/*
+"Github Actions":
+  - .github/**
 
-'Frontend':
-  - src/frontend/**/*
+"Backend":
+  - src/backend/**
 
-'E2E':
-  - src/e2e/**/*
+"Frontend":
+  - src/frontend/**
+
+"E2E":
+  - src/e2e/**
+
+"Docker":
+  - "**/Dockerfile*"
+  - docker-compose.*.yml
