@@ -1,5 +1,4 @@
 # # Dockerfile for frontend service
-
 # Stage 1: Build the application
 
 # Accept build argument for Node version
@@ -25,7 +24,6 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the application with Caddy
-
 # Accept build argument for Caddy version
 FROM ${CADDY_IMAGE} as caddy
 
