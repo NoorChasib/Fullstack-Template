@@ -1,31 +1,7 @@
 # # Dockerfile for frontend service
 
-# # Accept build argument for Node version
-# ARG NODE_VERSION
-
-# # Use the Node.js image with the specified version
-# FROM node:${NODE_VERSION}
-
-# # Set the working directory inside the container
-# WORKDIR /usr/src/app/frontend
-
-# # Copy package.json and package-lock.json
-# COPY package*.json ./
-
-# # Install dependencies
-# RUN npm i
-
-# # Copy the frontend code
-# COPY . .
-
-# # Build the frontend
-# RUN npm run build
-
-# # Keep the container running
-# CMD ["tail", "-f", "/dev/null"]
-
-
 # Stage 1: Build the application
+
 # Accept build argument for Node version
 ARG NODE_IMAGE
 ARG CADDY_IMAGE
@@ -49,8 +25,8 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the application with Caddy
-# Accept build argument for Caddy version
 
+# Accept build argument for Caddy version
 FROM ${CADDY_IMAGE} as caddy
 
 # Install certutil if needed for managing system trust store
