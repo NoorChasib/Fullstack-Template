@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import cors from 'cors';
 import client from '@/database/connectDatabase';
 
 type TimeRow = {
@@ -7,12 +6,11 @@ type TimeRow = {
 };
 
 const app = express();
-const port = process.env.PORT;
+const port = Number(process.env.BACKEND_PORT);
 
 app.use(express.json());
-app.use(cors());
 
-app.get('/', (_req: Request, res: Response) => {
+app.get('/api', (_req: Request, res: Response) => {
   res.status(200).send('Hello World!');
 });
 
@@ -36,6 +34,4 @@ app.get('/api/db-check', (_req: Request, res: Response) => {
     });
 });
 
-app.listen(Number(port), '::', () =>
-  console.log(`Server listening on [::]:${port}`),
-);
+app.listen(port), '::', () => console.log(`Server listening on [::]:${port}`);
