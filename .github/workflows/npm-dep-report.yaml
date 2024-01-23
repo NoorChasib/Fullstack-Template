@@ -24,7 +24,7 @@ env:
 jobs:
   # Parse Vars from config.
   parse-json5-config:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       packageJsonPaths: ${{ steps.parse_config.outputs.packageJsonPaths }}
       ignorePackages: ${{ steps.parse_config.outputs.ignorePackages }}
@@ -45,14 +45,14 @@ jobs:
 
   # Check package versions for updates.
   parse-package-versions:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: parse-json5-config
     env:
       packageJsonPaths: ${{ needs.parse-json5-config.outputs.packageJsonPaths }}
       ignorePackages: ${{ needs.parse-json5-config.outputs.ignorePackages }}
     container:
       # Lightweight NodeJS Image
-      image: node:21.5-bookworm-slim
+      image: node:current-bookworm-slim
 
     steps:
       # Checkout branch.
@@ -77,12 +77,12 @@ jobs:
     needs:
       - parse-json5-config
       - parse-package-versions
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       packageJsonPaths: ${{ needs.parse-json5-config.outputs.packageJsonPaths }}
     container:
       # Lightweight NodeJS Image
-      image: node:21.5-bookworm-slim
+      image: node:current-bookworm-slim
 
     steps:
       # Checkout branch.
@@ -114,12 +114,12 @@ jobs:
     needs:
       - parse-json5-config
       - write-output
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       packageJsonPaths: ${{ needs.parse-json5-config.outputs.packageJsonPaths }}
     container:
       # Lightweight NodeJS Image
-      image: node:21.5-bookworm-slim
+      image: node:current-bookworm-slim
 
     steps:
       # Checkout branch.
