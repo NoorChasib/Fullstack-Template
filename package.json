@@ -17,6 +17,9 @@
 		"prod:rebuild": "docker compose -f compose.prod.yaml down --rmi all --volumes && docker compose -f compose.prod.yaml build --no-cache && docker compose -f compose.prod.yaml up -d",
 		"prod:prune": "docker compose -f compose.prod.yaml down --rmi all --volumes",
 		"prod:logs": "docker compose -f compose.prod.yaml logs -f",
+		"shell:frontend": "docker exec -it frontend-Fullstack-Template sh",
+		"shell:backend": "docker exec -it backend-Fullstack-Template sh",
+		"shell:db": "docker exec -it db-Fullstack-Template sh",
 		"prune": "docker system prune -af --volumes"
 	}
 }
