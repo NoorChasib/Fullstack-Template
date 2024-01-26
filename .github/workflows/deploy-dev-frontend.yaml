@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.actor }}/Frontend-Dev-Fullstack-Template:latest
+  IMAGE_NAME: ${{ github.actor }}/frontend-dev-fullstack-template:latest
 
 jobs:
   publish:
