@@ -7,7 +7,6 @@ services:
   ##############################################################################
   frontend:
     container_name: frontend-${APP_NAME}
-    tty: true
     restart: always
     build:
       context: ./src/frontend
@@ -26,7 +25,7 @@ services:
       - caddy_config:/config
     networks:
       - shared-network
-    env_file: 
+    env_file:
       - .env
 
   ##############################################################################
@@ -34,19 +33,19 @@ services:
   ##############################################################################
   backend:
     container_name: backend-${APP_NAME}
-    tty: true
     restart: always
     build:
       context: ./src/backend
       dockerfile: .docker/Dockerfile.prod
       args:
-      - NODE_IMAGE=${NODE_IMAGE}
+        - NODE_IMAGE=${NODE_IMAGE}
+        - BACKEND_PORT=${BACKEND_PORT}
     depends_on:
       db:
         condition: service_healthy
     networks:
       - shared-network
-    env_file: 
+    env_file:
       - .env
 
   ##############################################################################
@@ -54,14 +53,18 @@ services:
   ##############################################################################
   db:
     container_name: db-${APP_NAME}
-    image: ${DATABASE_IMAGE} # This will depend on setup and the images available
     restart: always
+    build:
+      context: ./src/db
+      dockerfile: .docker/Dockerfile.prod
+      args:
+        - DATABASE_IMAGE=${DATABASE_IMAGE}
+        - DATABASE_PORT=${DATABASE_PORT}
     environment: # Adapt these to match the database type you're using
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
-      - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
     networks:
       - shared-network
     healthcheck:

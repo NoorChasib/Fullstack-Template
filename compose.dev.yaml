@@ -14,6 +14,7 @@ services:
       dockerfile: .docker/Dockerfile.dev
       args:
         - NODE_IMAGE=${NODE_IMAGE}
+        - FRONTEND_PORT=${FRONTEND_PORT}
     depends_on:
       - backend
     volumes:
@@ -23,7 +24,7 @@ services:
       - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
-    env_file: 
+    env_file:
       - .env
 
   ##############################################################################
@@ -38,6 +39,7 @@ services:
       dockerfile: .docker/Dockerfile.dev
       args:
         - NODE_IMAGE=${NODE_IMAGE}
+        - BACKEND_PORT=${BACKEND_PORT}
     depends_on:
       db:
         condition: service_healthy
@@ -48,7 +50,7 @@ services:
       - /usr/src/app/backend/node_modules
     networks:
       - shared-network
-    env_file: 
+    env_file:
       - .env
 
   ##############################################################################
@@ -67,7 +69,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./src/backend/db/pgadmin/servers.json:/pgadmin4/servers.json
+      - ./src/db/pgadmin/servers.json:/pgadmin4/servers.json
       - pgadmin_data:/var/lib/pgadmin
     networks:
       - shared-network
@@ -77,16 +79,20 @@ services:
   ##############################################################################
   db:
     container_name: db-${APP_NAME}
-    image: ${DATABASE_IMAGE} # This will depend on setup and the images available
+    tty: true
     restart: always
+    build:
+      context: ./src/db
+      dockerfile: .docker/Dockerfile.dev
+      args:
+        - DATABASE_IMAGE=${DATABASE_IMAGE}
+        - DATABASE_PORT=${DATABASE_PORT}
     environment: # Adapt these to match the database type you're using
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    # ports:
-    #   - ${DATABASE_PORT}:${DATABASE_PORT} # do not change this port
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
-      - ./src/backend/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
+      - ./src/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
     networks:
       - shared-network
     healthcheck:
