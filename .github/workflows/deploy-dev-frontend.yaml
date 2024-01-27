@@ -4,41 +4,37 @@ on:
   workflow_dispatch:
 
 env:
+  USERNAME: noorchasib
   REGISTRY: ghcr.io
   IMAGE_NAME: noorchasib/frontend-dev-fullstack-template:latest
+  COMPOSE_FILE: compose.prod.yaml
+  SOURCE_IMAGE: fullstack-template-frontend
 
 jobs:
   publish:
     name: publish frontend dev image
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
       - uses: actions/checkout@v4
-      - name: Login
+
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ env.USERNAME }} --password-stdin
+
+      - name: Create .env file
         run: |
-          echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login ghcr.io -u noorchasib --password-stdin
-      - name: Build and Publish Frontend
-        run: |
-          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          echo "NODE_IMAGE=${{ secrets.NODE_IMAGE }}" >> .env
+          echo "CADDY_IMAGE=${{ secrets.CADDY_IMAGE }}" >> .env
+          echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" >> .env
+          echo "CADDY_PROD_URL=${{ secrets.CADDY_PROD_URL }}" >> .env
+          echo "CADDY_PROD_BACKEND_URL=${{ secrets.CADDY_PROD_BACKEND_URL }}" >> .env
 
-  deploy:
-    needs: publish
-    name: deploy image
-    runs-on: ubuntu-latest
+      - name: Build Frontend Image using Docker Compose
+        run: docker compose -f ${{ env.COMPOSE_FILE }} build frontend
 
-    steps:
-      - name:
-          install ssh keys
-          # check this thread to understand why its needed:
-          # <https://stackoverflow.com/a/70447517>
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa 
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Tag the Built Image
+        run: docker tag ${{ env.SOURCE_IMAGE }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: connect and pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull && docker compose up -d && exit"
-
-      - name: cleanup
-        run: rm -rf ~/.ssh
+      - name: Publish the Image to GitHub Container Registry
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
