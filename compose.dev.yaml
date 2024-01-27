@@ -24,8 +24,11 @@ services:
       - /usr/src/app/frontend/node_modules
     networks:
       - shared-network
-    env_file:
-      - .env
+    environment:
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - CADDY_DEV_URL=${CADDY_DEV_URL}
+      - CADDY_DEV_BACKEND_URL=${CADDY_DEV_BACKEND_URL}
+      - CADDY_DEV_FRONTEND_URL=${CADDY_DEV_FRONTEND_URL}
 
   ##############################################################################
   #                                   Backend                                  #
@@ -50,8 +53,13 @@ services:
       - /usr/src/app/backend/node_modules
     networks:
       - shared-network
-    env_file:
-      - .env
+    environment:
+    - BACKEND_PORT=${BACKEND_PORT}
+    - DATABASE_HOST=${DATABASE_HOST}
+    - DATABASE_USER=${DATABASE_USER}
+    - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    - DATABASE_NAME=${DATABASE_NAME}
+    - DATABASE_PORT=${DATABASE_PORT}
 
   ##############################################################################
   #                                    pgAdmin                                 #
