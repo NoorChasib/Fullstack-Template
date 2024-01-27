@@ -26,9 +26,6 @@ services:
       - shared-network
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT}
-      - CADDY_DEV_URL=${CADDY_DEV_URL}
-      - CADDY_DEV_BACKEND_URL=${CADDY_DEV_BACKEND_URL}
-      - CADDY_DEV_FRONTEND_URL=${CADDY_DEV_FRONTEND_URL}
 
   ##############################################################################
   #                                   Backend                                  #
@@ -124,10 +121,12 @@ services:
       - ./src/frontend/.caddy/dev.Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-    env_file:
-      - .env
     networks:
       - shared-network
+    environment:
+      - CADDY_DEV_URL=${CADDY_DEV_URL}
+      - CADDY_DEV_BACKEND_URL=${CADDY_DEV_BACKEND_URL}
+      - CADDY_DEV_FRONTEND_URL=${CADDY_DEV_FRONTEND_URL}
 
   ##############################################################################
   #                                    Extra                                   #
