@@ -2,6 +2,7 @@
 
 # Accept build argument for Node version
 ARG NODE_IMAGE
+ARG BACKEND_PORT
 
 # Use the Node.js image with the specified version
 FROM ${NODE_IMAGE}
@@ -20,6 +21,9 @@ COPY . .
 
 # Build the backend
 RUN npm run build
+
+# Expose the port the app runs on
+EXPOSE ${BACKEND_PORT}
 
 # Command to run the app
 CMD [ "npm", "run", "start" ]
