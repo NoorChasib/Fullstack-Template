@@ -1,0 +1,40 @@
+name: Deploy DB Dev Image
+
+on:
+  workflow_dispatch:
+
+env:
+  USERNAME: noorchasib
+  REGISTRY: ghcr.io
+  IMAGE_NAME: noorchasib/db-dev-fullstack-template:latest
+  COMPOSE_FILE: compose.prod.yaml
+  SOURCE_IMAGE: fullstack-template-db
+
+jobs:
+  publish:
+    name: publish db dev image
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ env.USERNAME }} --password-stdin
+
+      - name: Create .env file
+        run: |
+          echo "DATABASE_IMAGE=${{ secrets.DATABASE_IMAGE }}" >> .env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+
+      - name: Build DB Image using Docker Compose
+        run: docker compose -f ${{ env.COMPOSE_FILE }} build db
+
+      - name: Tag the Built Image
+        run: docker tag ${{ env.SOURCE_IMAGE }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Publish the Image to GitHub Container Registry
+        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
