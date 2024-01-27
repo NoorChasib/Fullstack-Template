@@ -1,4 +1,4 @@
-name: Deploy DB Dev Image
+name: Deploy - Dev DB
 
 on:
   workflow_dispatch:

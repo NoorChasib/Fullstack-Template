@@ -1,4 +1,4 @@
-name: NPM Dependency Reports
+name: Util - NPM Dependency Reports
 
 on:
   schedule:

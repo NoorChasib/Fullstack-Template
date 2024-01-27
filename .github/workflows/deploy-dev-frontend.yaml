@@ -1,4 +1,4 @@
-name: Deploy Frontend Dev Image
+name: Deploy - Dev Frontend
 
 on:
   workflow_dispatch:
