@@ -42,14 +42,7 @@ jobs:
 
       - name: Publish the Image to GitHub Container Registry
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-  deploy:
-    needs: publish
-    name: Deploy db dev image
-    runs-on: ubuntu-latest
-    environment: dev
-
-    steps:
+        
       - name: Install ssh keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
