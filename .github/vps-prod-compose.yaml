@@ -11,12 +11,13 @@ services:
     container_name: frontend
     restart: always
     image: ghcr.io/noorchasib/frontend-dev-fullstack-template:latest
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - 80:80
       - 443:443
       - 443:443/udp
-    depends_on:
-      - backend
     volumes:
       - caddy_data:/data
       - caddy_config:/config

@@ -12,7 +12,7 @@ env:
 
 jobs:
   publish:
-    name: publish frontend dev image
+    name: Publish frontend dev image
     runs-on: ubuntu-latest
     environment: dev
 
@@ -38,3 +38,22 @@ jobs:
 
       - name: Publish the Image to GitHub Container Registry
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  deploy:
+    needs: publish
+    name: Deploy frontend dev image
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+      - name: connect and pull frontend
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull frontend && docker compose up -d frontend && exit"
+
+      - name: cleanup
+        run: rm -rf ~/.ssh
