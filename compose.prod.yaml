@@ -74,11 +74,6 @@ services:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:
       - shared-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   ##############################################################################
   #                                    Extra                                   #
