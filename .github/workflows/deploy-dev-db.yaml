@@ -42,15 +42,15 @@ jobs:
 
       - name: Publish the Image to GitHub Container Registry
         run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        
+
       - name: Install ssh keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: connect and pull db
+      - name: Connect and pull db
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull db && docker compose up -d db && exit"
 
-      - name: cleanup
+      - name: Cleanup
         run: rm -rf ~/.ssh
