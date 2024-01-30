@@ -50,7 +50,7 @@ jobs:
             cd ${{ secrets.WORK_DIR }}
             docker load < /tmp/db.tar
             docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
-            docker compose up -d db
+            POSTGRES_DB=${{ secrets.DATABASE_NAME }} POSTGRES_USER=${{ secrets.DATABASE_USER }} POSTGRES_PASSWORD=${{ secrets.DATABASE_PASSWORD }} docker-compose up -d db
 
       - name: Cleanup
         run: rm -f db.tar
