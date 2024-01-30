@@ -10,7 +10,7 @@ services:
   frontend:
     container_name: frontend
     restart: always
-    image: ghcr.io/noorchasib/frontend-dev-fullstack-template:latest
+    image: frontend-dev-fullstack-template
     depends_on:
       db:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
   backend:
     container_name: backend
     restart: always
-    image: ghcr.io/noorchasib/backend-dev-fullstack-template:latest
+    image: backend-dev-fullstack-template
     depends_on:
       db:
         condition: service_healthy
@@ -43,7 +43,7 @@ services:
   db:
     container_name: db
     restart: always
-    image: ghcr.io/noorchasib/db-dev-fullstack-template:latest
+    image: db-dev-fullstack-template
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:

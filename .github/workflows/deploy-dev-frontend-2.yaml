@@ -1,0 +1,56 @@
+name: Deploy - Dev Frontend - 2
+
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: frontend-dev-fullstack-template
+  COMPOSE_FILE: compose.prod.yaml
+  SOURCE_IMAGE: fullstack-template-frontend
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Frontend Image
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "NODE_IMAGE=${{ secrets.NODE_IMAGE }}" >> .env
+          echo "CADDY_IMAGE=${{ secrets.CADDY_IMAGE }}" >> .env
+          echo "FRONTEND_PORT=${{ secrets.FRONTEND_PORT }}" >> .env
+          echo "CADDY_PROD_URL=${{ secrets.CADDY_PROD_URL }}" >> .env
+          echo "CADDY_PROD_BACKEND_URL=${{ secrets.CADDY_PROD_BACKEND_URL }}" >> .env
+
+      - name: Build Frontend Image using Docker Compose
+        run: docker compose -f ${{ env.COMPOSE_FILE }} build frontend
+
+      - name: Save the Docker Image
+        run: docker save ${{ env.SOURCE_IMAGE }} > frontend.tar
+
+      - name: Transfer the Image to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend.tar"
+          target: "/tmp"
+
+      - name: Load the Image on the VPS and Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            docker load < /tmp/frontend.tar
+            docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
+            docker compose up -d frontend
+
+      - name: Cleanup
+        run: rm -f frontend.tar

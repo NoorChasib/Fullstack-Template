@@ -1,0 +1,58 @@
+name: Deploy - Dev Backend - 2
+
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: backend-dev-fullstack-template
+  COMPOSE_FILE: compose.prod.yaml
+  SOURCE_IMAGE: fullstack-template-backend
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Backend Image
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "NODE_IMAGE=${{ secrets.NODE_IMAGE }}" >> .env
+          echo "BACKEND_PORT=${{ secrets.BACKEND_PORT }}" >> .env
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
+
+      - name: Build Backend Image using Docker Compose
+        run: docker compose -f ${{ env.COMPOSE_FILE }} build backend
+
+      - name: Save the Docker Image
+        run: docker save ${{ env.SOURCE_IMAGE }} > backend.tar
+
+      - name: Transfer the Image to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "backend.tar"
+          target: "/tmp"
+
+      - name: Load the Image on the VPS and Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            docker load < /tmp/backend.tar
+            docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
+            docker compose up -d backend
+
+      - name: Cleanup
+        run: rm -f backend.tar
