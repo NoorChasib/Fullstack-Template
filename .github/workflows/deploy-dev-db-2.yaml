@@ -31,6 +31,15 @@ jobs:
       - name: Save the Docker Image
         run: docker save ${{ env.SOURCE_IMAGE }} > db.tar
 
+      - name: Transfer the .env File to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".env"
+          target: "${{ secrets.WORK_DIR }}"
+
       - name: Transfer the Image to the VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -50,7 +59,8 @@ jobs:
             cd ${{ secrets.WORK_DIR }}
             docker load < /tmp/db.tar
             docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
-            docker compose up -d db
+            docker compose --env-file .env up -d db
+            rm -f .env
 
       - name: Cleanup
         run: rm -f db.tar
