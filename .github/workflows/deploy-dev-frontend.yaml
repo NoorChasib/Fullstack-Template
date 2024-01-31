@@ -4,23 +4,18 @@ on:
   workflow_dispatch:
 
 env:
-  USERNAME: noorchasib
-  REGISTRY: ghcr.io
-  IMAGE_NAME: noorchasib/frontend-dev-fullstack-template:latest
+  IMAGE_NAME: frontend-dev-fullstack-template
   COMPOSE_FILE: compose.prod.yaml
   SOURCE_IMAGE: fullstack-template-frontend
 
 jobs:
-  publish:
-    name: Publish frontend dev image
+  build-and-deploy:
+    name: Build and Deploy Frontend Image
     runs-on: ubuntu-latest
     environment: dev
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ env.USERNAME }} --password-stdin
 
       - name: Create .env file
         run: |
@@ -33,27 +28,37 @@ jobs:
       - name: Build Frontend Image using Docker Compose
         run: docker compose -f ${{ env.COMPOSE_FILE }} build frontend
 
-      - name: Tag the Built Image
-        run: docker tag ${{ env.SOURCE_IMAGE }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Save the Docker Image
+        run: docker save ${{ env.SOURCE_IMAGE }} > frontend.tar
 
-      - name: Publish the Image to GitHub Container Registry
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Transfer the .env File to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".env"
+          target: "/tmp"
 
-  deploy:
-    needs: publish
-    name: Deploy frontend dev image
-    runs-on: ubuntu-latest
-    environment: dev
+      - name: Transfer the Image to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend.tar"
+          target: "/tmp"
 
-    steps:
-      - name: Install ssh keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-
-      - name: connect and pull frontend
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull frontend && docker compose up -d frontend && exit"
-
-      - name: cleanup
-        run: rm -rf ~/.ssh
+      - name: Load the Image on the VPS and Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            docker load < /tmp/frontend.tar
+            docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
+            docker compose --env-file /tmp/.env up -d frontend
+            rm -f .env
+            rm -f frontend.tar

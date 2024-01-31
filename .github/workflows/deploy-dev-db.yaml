@@ -4,27 +4,18 @@ on:
   workflow_dispatch:
 
 env:
-  USERNAME: noorchasib
-  REGISTRY: ghcr.io
-  IMAGE_NAME: noorchasib/db-dev-fullstack-template:latest
+  IMAGE_NAME: db-dev-fullstack-template
   COMPOSE_FILE: compose.prod.yaml
   SOURCE_IMAGE: fullstack-template-db
 
 jobs:
-  publish:
-    name: Publish db dev image
+  build-and-deploy:
+    name: Build and Deploy DB Image
     runs-on: ubuntu-latest
     environment: dev
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ env.USERNAME }}
-          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Create .env file
         run: |
@@ -37,37 +28,38 @@ jobs:
       - name: Build DB Image using Docker Compose
         run: docker compose -f ${{ env.COMPOSE_FILE }} build db
 
-      - name: Tag the Built Image
-        run: docker tag ${{ env.SOURCE_IMAGE }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Save the Docker Image
+        run: docker save ${{ env.SOURCE_IMAGE }} > db.tar
 
-      - name: Publish the Image to GitHub Container Registry
-        run: docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-  deploy:
-    needs: publish
-    name: Deploy db dev image
-    runs-on: ubuntu-latest
-    environment: dev
-
-    steps:
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Transfer the .env File to the VPS
+        uses: appleboy/scp-action@v0.1.7
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ env.USERNAME }}
-          password: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".env"
+          target: "/tmp"
 
-      - name: Install ssh keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: Transfer the Image to the VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "db.tar"
+          target: "/tmp"
 
-      - name: Connect to server
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
-
-      - name: connect and pull db
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && docker compose pull db && docker compose up -d db && exit"
-
-      - name: Cleanup
-        run: rm -rf ~/.ssh
+      - name: Load the Image on the VPS and Run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.WORK_DIR }}
+            docker load < /tmp/db.tar
+            docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
+            docker compose --env-file /tmp/.env up -d db
+            cd /tmp
+            rm -f .env
+            rm -f db.tar
