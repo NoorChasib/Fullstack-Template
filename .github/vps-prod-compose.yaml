@@ -11,9 +11,6 @@ services:
     container_name: frontend
     restart: always
     image: frontend-dev-fullstack-template
-    depends_on:
-      db:
-        condition: service_healthy
     ports:
       - 80:80
       - 443:443
@@ -35,9 +32,6 @@ services:
     container_name: backend
     restart: always
     image: backend-dev-fullstack-template
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       - shared-network
     environment:
