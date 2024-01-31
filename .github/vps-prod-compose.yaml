@@ -55,16 +55,13 @@ services:
     container_name: db
     restart: always
     image: db-dev-fullstack-template
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:
       - shared-network
     environment:
       - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
