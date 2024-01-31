@@ -11,6 +11,9 @@
 "Frontend":
   - src/frontend/**
 
+"Database":
+  - src/db/**
+
 "E2E":
   - src/e2e/**
 
