@@ -60,7 +60,6 @@ jobs:
             docker load < /tmp/db.tar
             docker tag ${{ env.SOURCE_IMAGE }} ${{ env.IMAGE_NAME }}
             docker compose --env-file .env up -d db
-            rm -f .env
 
       - name: Cleanup
         run: rm -f db.tar
