@@ -63,10 +63,3 @@ jobs:
             cd /tmp
             rm -f .env
             rm -f db.tar
-  
-
-      # - name: Cleanup
-      #   run: |
-      #     cd /tmp
-      #     rm -f .env
-      #     rm -f db.tar
