@@ -34,4 +34,4 @@ app.get('/api/db-check', (_req: Request, res: Response) => {
     });
 });
 
-app.listen(port), '::', () => console.log(`Server listening on [::]:${port}`);
+app.listen(port, '::', () => console.log(`Server listening on [::]:${port}`));
