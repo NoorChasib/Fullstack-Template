@@ -1,21 +1,14 @@
-# Project Name
+# Fullstack Template
 
-Fullstack Docker template.
+This is a comprehensive Fullstack Docker template designed to streamline the development and deployment process for both frontend and backend applications.
 
 ## Technologies Used
-
-### Overall
-
-- Docker
 
 ### Frontend
 
 - **Framework/Library**:
-
   - React
-
 - **Development Tools**:
-
   - Vite
   - TypeScript
   - ESLint
@@ -25,100 +18,85 @@ Fullstack Docker template.
 ### Backend
 
 - **Core Technologies**:
-
   - Express.js
-  - Cors
-  - Pg
-
+  - PostgreSQL (Pg)
 - **Development Tools**:
-
   - Nodemon
+  - TypeScript
+  - ESLint
+  - Prettier
   - Docker
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Follow these instructions to set up the project locally for development and testing purposes.
 
 ### Prerequisites
 
-List things you need to install the software and how to install them.
+Ensure you have Docker installed on your machine. For other prerequisites, refer to the specific sections below.
 
-### Installing
+### Setup Instructions
 
-A step by step series of examples that tell you how to get a development environment running.
+To fully set up the project, you can follow the detailed step-by-step guide available in the [Project Wiki](https://github.com/NoorChasib/Fullstack-Template/wiki). The Wiki includes comprehensive instructions on:
 
-#### Step 1: Clone the Repository
+- Setting up a VPS
+- Setting the project up locally
+- Setting the project up on Github
+- Setting up a domain for the VPS
 
-To get started, clone the repository to your local machine.
+For a quick start, follow these steps:
 
-```bash
-git clone [URL to the repository]
-```
+1. **Use the template**: Click `Use this template` to create your own repo.
 
-#### Step 2: Navigate to the root directory of the project
+2. **Clone the Repository**: Clone the project to your local machine.
+   ```bash
+   git clone [URL to the repository]
+   ```
+3. **Navigate to the Project Directory**: Change into the project directory.
+   ```bash
+   cd [repository name]
+   ```
+4. **Environment Configuration**: Copy the `.env.template` file to `.env` and customize it with your settings.
+   ```bash
+   cp .env.template .env
+   ```
+5. **Database Configuration**: Rename `src/db/pgadmin/servers.json.template` to `servers.json` and edit it with your database settings.
+   ```bash
+   cd src/db/pgadmin
+   cp servers.json.template servers.json
+   ```
 
-```bash
-cd [repository name]
-```
+### Docker Configuration
 
-#### Step 3: Copy the .env.template file and rename it to .env.
-
-Edit .env file with your environment-specific settings. Do the same for src/frontend and src/backend
-
-```bash
-cp .env.template .env
-```
-
-#### Step 4: Rename pgadmin/servers.json.template to servers.json.template
-
-Edit servers.json file with your environment-specific settings
-
-```bash
-cp servers.json.template servers.json
-```
-
-### Configuring Docker
-
-1. Navigate to the compose.yaml file.
-
-2. Make any required changes in the compose.yaml file to suit your needs.
+- Navigate to the `compose.(dev/prod).yaml` file and adjust settings as necessary to fit your project requirements.
 
 ### Running the Project
 
-The project uses Docker to simplify development and deployment. Below are some of the scripts available in package.json to run the project.
+Utilize Docker for an easier development and deployment process. Here are some commands provided in `package.json`:
 
-- To install all necessary packages:
+- **Initialize Project**: Install all necessary packages.
+  ```bash
+  npm run init
+  ```
+- **Build and Start Docker Containers**:
+  ```bash
+  npm run dev:up
+  ```
+- **Stop Docker Containers**:
+  ```bash
+  npm run dev:down
+  ```
+- **Rebuild and Restart Docker Containers**:
+  ```bash
+  npm run dev:rebuild
+  ```
+- **Remove Docker Containers**:
+  ```bash
+  npm run dev:prune
+  ```
 
-```bash
-npm run init
-```
-
-- To build and start the Docker images:
-
-```bash
-npm run up
-```
-
-- To stop the Docker images:
-
-```bash
-npm run down
-```
-
-- To stop and remove the Docker images:
-
-```bash
-npm run prune
-```
-
-- To stop, remove, rebuild and start the Docker images:
-
-```bash
-npm run rebuild
-```
-
-For more Docker-related commands, refer to the `scripts` section in the `package.json`.
+Refer to the `scripts` section in `package.json` for additional Docker commands.
 
 ### Conclusion
 
-This boilerplate is designed to give you a head start in your projects. Feel free to modify and adapt it as per your requirements.
+This boilerplate is crafted to kickstart your projects efficiently. You are encouraged to modify and adapt it to meet your specific needs. For detailed setup and configuration instructions, please visit the [Project Wiki](https://github.com/NoorChasib/Fullstack-Template/wiki).
