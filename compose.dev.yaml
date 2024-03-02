@@ -23,7 +23,7 @@ services:
       # Ignores the node_modules of the host and uses it's own instead
       - /usr/src/app/frontend/node_modules
     networks:
-      - shared-network
+      - fullstack-template
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT}
 
@@ -49,7 +49,7 @@ services:
       # Ignores the node_modules of the host and uses it's own instead
       - /usr/src/app/backend/node_modules
     networks:
-      - shared-network
+      - fullstack-template
     environment:
     - BACKEND_PORT=${BACKEND_PORT}
     - DATABASE_HOST=${DATABASE_HOST}
@@ -77,7 +77,7 @@ services:
       - ./src/db/pgadmin/servers.json:/pgadmin4/servers.json
       - pgadmin_data:/var/lib/pgadmin
     networks:
-      - shared-network
+      - fullstack-template
 
   ##############################################################################
   #                                   Database                                 #
@@ -99,7 +99,7 @@ services:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
       - ./src/db/schema:/docker-entrypoint-initdb.d # any .sql files in this folder will be executed on startup
     networks:
-      - shared-network
+      - fullstack-template
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
       interval: 30s
@@ -122,7 +122,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - shared-network
+      - fullstack-template
     environment:
       - CADDY_DEV_URL=${CADDY_DEV_URL}
       - CADDY_DEV_BACKEND_URL=${CADDY_DEV_BACKEND_URL}
@@ -141,5 +141,5 @@ volumes:
 
 # Networks
 networks:
-  shared-network: # Adjust the network name for project
+  fullstack-template: # Adjust the network name for project
     driver: "bridge"

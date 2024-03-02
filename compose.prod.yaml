@@ -24,7 +24,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - shared-network
+      - fullstack-template
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT}
       - CADDY_PROD_URL=${CADDY_PROD_URL}
@@ -46,7 +46,7 @@ services:
       db:
         condition: service_healthy
     networks:
-      - shared-network
+      - fullstack-template
     environment:
     - BACKEND_PORT=${BACKEND_PORT}
     - DATABASE_HOST=${DATABASE_HOST}
@@ -73,7 +73,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
     networks:
-      - shared-network
+      - fullstack-template
 
   ##############################################################################
   #                                    Extra                                   #
@@ -87,5 +87,5 @@ volumes:
 
 # Networks
 networks:
-  shared-network: # Adjust the network name for project
+  fullstack-template: # Adjust the network name for project
     driver: "bridge"
