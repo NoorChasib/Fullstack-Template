@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: backend-dev-fullstack-template
+  IMAGE_NAME: backend-dev-fullstack-template #Adjust
   COMPOSE_FILE: compose.prod.yaml
   SOURCE_IMAGE: fullstack-template-backend
 
