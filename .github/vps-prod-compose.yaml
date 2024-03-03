@@ -10,7 +10,7 @@ services:
   frontend:
     container_name: frontend
     restart: always
-    image: frontend-dev-fullstack-template
+    image: frontend-dev-fullstack-template #Adjust
     ports:
       - 80:80
       - 443:443
@@ -19,7 +19,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - fullstack-template
+      - fullstack-template #Adjust
     environment:
       - FRONTEND_PORT=${FRONTEND_PORT}
       - CADDY_PROD_URL=${CADDY_PROD_URL}
@@ -31,9 +31,9 @@ services:
   backend:
     container_name: backend
     restart: always
-    image: backend-dev-fullstack-template
+    image: backend-dev-fullstack-template #Adjust
     networks:
-      - fullstack-template
+      - fullstack-template #Adjust
     environment:
     - BACKEND_PORT=${BACKEND_PORT}
     - DATABASE_HOST=${DATABASE_HOST}
@@ -50,15 +50,15 @@ services:
     restart: always
     image: db-dev-fullstack-template
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Adjust the volume name if using a different database
+      - postgres_data:/var/lib/postgresql/data
     networks:
-      - fullstack-template
+      - fullstack-template #Adjust
     environment:
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"] # Adjust the healthcheck for different databases
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -69,11 +69,11 @@ services:
 
 # Volumes
 volumes:
-  postgres_data: # Adjust the volume name if using a different database
+  postgres_data:
   caddy_data:
   caddy_config:
 
 # Networks
 networks:
-  fullstack-template: # Adjust the network name for project
+  fullstack-template: #Adjust
     driver: "bridge"
