@@ -6,7 +6,7 @@ on:
 env:
   IMAGE_NAME: db-dev-fullstack-template #Adjust
   COMPOSE_FILE: compose.prod.yaml
-  SOURCE_IMAGE: fullstack-template-db
+  SOURCE_IMAGE: fullstack-template-db #Adjust
 
 jobs:
   build-and-deploy:
