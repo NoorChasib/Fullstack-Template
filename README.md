@@ -40,9 +40,11 @@ Ensure you have Docker installed on your machine. For other prerequisites, refer
 To fully set up the project, it is HIGHLY recommended you follow the detailed step-by-step guide available in the [Project Wiki](https://github.com/NoorChasib/Fullstack-Template/wiki). The Wiki includes comprehensive instructions on:
 
 - Setting up a VPS
+- Setting up a domain for the VPS
 - Setting the project up locally
 - Setting the project up on Github
-- Setting up a domain for the VPS
+- Setting the project up on the VPS
+- Finalizing deployment of the project
 
 For a quick start, follow these steps:
 
