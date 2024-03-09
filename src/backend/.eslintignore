@@ -10,4 +10,4 @@ coverage/*
 # custom definition files
 /src/types/
 
-.eslintrc.js
+.eslintrc.cjs
