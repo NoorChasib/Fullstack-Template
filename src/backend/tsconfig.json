@@ -1,24 +1,29 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "NodeNext",
     "lib": ["ESNext"],
-    "allowJs": true,
+
+    /* Building */
     "outDir": "./dist",
     "rootDir": "./src",
-    "esModuleInterop": true,
-    "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+
+    /* Linting */
     "skipLibCheck": true,
+    "exactOptionalPropertyTypes": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "allowSyntheticDefaultImports": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
